@@ -63,5 +63,49 @@ namespace API.Controllers
                 return StatusCode(500, $"Error retrieving product with Id = {id}");
             }
         }
+
+        [HttpGet("brands")]
+        public async Task<ActionResult<List<ProductBrand>>> GetProductBrands()
+        {
+            try
+            {
+                IReadOnlyList<ProductBrand> brands = null;
+                await Task.Run(async () => {
+                    brands = await _repo.GetProductBrandsAsync();
+                });
+
+                if (brands != null)
+                    return Ok(brands);
+                else 
+                    return Ok();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, "Error retrieving list of product brands");
+            }
+        }
+
+        [HttpGet("types")]
+        public async Task<ActionResult<List<ProductType>>> GetProductTypes()
+        {
+            try
+            {
+                IReadOnlyList<ProductType> types = null;
+                await Task.Run(async () => {
+                    types = await _repo.GetProductTypesAsync();
+                });
+
+                if (types != null)
+                    return Ok(types);
+                else 
+                    return Ok();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, "Error retrieving list of product types");
+            }
+        }
     }
 }
