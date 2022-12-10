@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Core.Entities;
+using Core.Interfaces;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,11 +13,11 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
     {
-        private readonly StoreContext _context;
+        private readonly IProductRepository _repo;
 
-        public ProductsController(StoreContext context)
+        public ProductsController(IProductRepository repo)
         {
-            _context = context;
+            _repo = repo;
         }
 
         [HttpGet]
@@ -24,9 +25,9 @@ namespace API.Controllers
         {
             try
             {
-                List<Product> products = null;
-                await Task.Run(() => {
-                    products = _context.Products.ToList();
+                IReadOnlyList<Product> products = null;
+                await Task.Run(async () => {
+                    products = await _repo.GetProductsAsync();
                 });
 
                 if (products != null)
@@ -47,8 +48,8 @@ namespace API.Controllers
             try
             {
                 Product product = null;
-                await Task.Run(() => {
-                    product = _context.Products.Find(id);
+                await Task.Run(async () => {
+                    product = await _repo.GetProductByIdAsync(id);
                 });
 
                 if (product != null)
