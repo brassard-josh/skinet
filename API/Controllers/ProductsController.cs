@@ -35,7 +35,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Product>>> GetProducts()
+        public async Task<ActionResult<IReadOnlyList<ProductToReturnDTO>>> GetProducts()
         {
             try
             {
@@ -47,7 +47,7 @@ namespace API.Controllers
                 });
 
                 if (products != null)
-                    return Ok(products.Select(p => _mapper.Map<Product, ProductToReturnDTO>(p)).ToList());
+                    return Ok(_mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDTO>>(products));
                 else 
                     return Ok();
             }
