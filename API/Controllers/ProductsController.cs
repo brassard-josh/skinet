@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Dtos;
+using API.Errors;
+using API.Helpers;
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
@@ -35,26 +37,24 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<ProductToReturnDTO>>> GetProducts()
+        public async Task<ActionResult<Pagination<ProductToReturnDTO>>> GetProducts([FromQuery]ProductSpecParams prodParams)
         {
             try
             {
-                IReadOnlyList<Product> products = null;
-                var spec = new ProductsWithTypesAndBrandsSpecification();
+                var spec = new ProductsWithTypesAndBrandsSpecification(prodParams);
+                var countSpec = new ProductWithFiltersForCountSpecification(prodParams);
+                var totalItems = await _productsRepo.CountAsync(countSpec);
 
-                await Task.Run(async () => {
-                    products = await _productsRepo.ListAsync(spec);
-                });
+                var products = await _productsRepo.ListAsync(spec);
 
-                if (products != null)
-                    return Ok(_mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDTO>>(products));
-                else 
-                    return Ok();
+                var data = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDTO>>(products);
+
+                return Ok(new Pagination<ProductToReturnDTO>(prodParams.PageIndex, prodParams.PageSize, totalItems, data));
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return StatusCode(500, "Error retrieving list of products");
+                return StatusCode(500, new ApiException(500, $"Something went wrong: {ex.Message}", ex.StackTrace.ToString()));
             }
         }
 
