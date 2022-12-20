@@ -1,12 +1,12 @@
 <header style="z-index: 100000; background-color: white" class="d-flex align-items-center justify-content-between py-3 mb-4 border-bottom fixed-top">
-    <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
+    <a class="d-flex align-items-center text-dark text-decoration-none logo" routerLink="/">
         <img src="/assets/images/logo.png" style="max-height: 70px;" alt="logo">
     </a>
 
     <nav class="my-2 my-md-0 mr-md-3 text-uppercase" style="font-size: larger;">
-        <a href="#" class="p-2 text-dark">Home</a>
-        <a href="#" class="p-2 text-dark">Shop</a>
-        <a href="#" class="p-2 text-dark">Contact</a>
+        <a [routerLink]="['/']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="p-2">Home</a>
+        <a routerLink="/shop" routerLinkActive="active" class="p-2">Shop</a>
+        <a href="#" class="p-2">Contact</a>
     </nav>
 
     <div class="d-flex align-items-center justify-content-between">
