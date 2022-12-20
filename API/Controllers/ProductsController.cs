@@ -61,8 +61,8 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductToReturnDTO>> GetProduct(int id) 
         {
-            try
-            {
+            // try
+            // {
                 Product product = null;
                 var spec = new ProductsWithTypesAndBrandsSpecification(id);
 
@@ -74,12 +74,12 @@ namespace API.Controllers
                     return Ok(_mapper.Map<Product, ProductToReturnDTO>(product));
                 else
                     return Ok();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return StatusCode(500, $"Error retrieving product with Id = {id}");
-            }
+            // }
+            // catch (Exception ex)
+            // {
+            //     Console.WriteLine(ex.Message);
+            //     return StatusCode(500, $"Error retrieving product with Id = {id}");
+            // }
         }
 
         [HttpGet("brands")]
