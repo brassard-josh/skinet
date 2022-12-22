@@ -19,6 +19,7 @@ using API.Middleware;
 using API.Errors;
 using StackExchange.Redis;
 using API.Extensions;
+using Infrastructure.Identity;
 
 namespace API
 {
@@ -39,6 +40,7 @@ namespace API
             services.AddAutoMapper(typeof(MappingProfiles));
             services.AddControllers();
             services.AddDbContext<StoreContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<AppIdentityDbContext>(x => x.UseSqlite(Configuration.GetConnectionString("IdentityConnection")));
 
             services.AddSingleton<IConnectionMultiplexer>(c => {
                 var config = ConfigurationOptions.Parse(Configuration.GetConnectionString("Redis"), true);
@@ -46,6 +48,7 @@ namespace API
             });
 
             services.AddApplicationServices();
+            services.AddIdentityServices(Configuration);
 
             services.Configure<ApiBehaviorOptions>(options => {
                 options.InvalidModelStateResponseFactory = actionContext => {
@@ -94,6 +97,7 @@ namespace API
             app.UseStaticFiles();
 
             app.UseCors("CorsPolicy");
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
