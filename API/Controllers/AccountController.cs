@@ -107,6 +107,12 @@ namespace API.Controllers
                 UserName = registerDto.Email
             };
 
+            var exists = await CheckEmailExistsAsync(registerDto.Email);
+            if (exists.Value == true)
+            {
+                return new BadRequestObjectResult(new ApiValidationErrorResponse {Errors = new [] {"Email address is in use"}});
+            }
+
             var result = await _userManager.CreateAsync(user, registerDto.Password);
             if (!result.Succeeded) 
             {
