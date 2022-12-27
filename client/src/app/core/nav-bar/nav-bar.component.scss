@@ -23,3 +23,13 @@ a {
 .logo {
     cursor: default;
 }
+
+div.dropdown {
+    a.dropdown-toggle {
+        cursor: pointer;
+    }
+
+    div.dropdown-menu {
+        cursor: pointer;
+    }
+}
